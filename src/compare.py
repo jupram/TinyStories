@@ -5,6 +5,7 @@ from glob import glob
 from typing import Dict, List
 
 import matplotlib.pyplot as plt
+from matplotlib.ticker import ScalarFormatter
 import pandas as pd
 
 
@@ -20,18 +21,24 @@ def load_run(run_dir: str) -> Dict:
 
 
 def plot_overlay(runs: List[Dict], column: str, ylabel: str, out_path: str) -> None:
-    plt.figure()
+    fig, ax = plt.subplots()
     for run in runs:
         df = run["df"]
         if column not in df:
             continue
-        plt.plot(df["step"], df[column], label=run["name"])
-    plt.xlabel("Step")
-    plt.ylabel(ylabel)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(out_path)
-    plt.close()
+        ax.plot(df["step"], df[column], label=run["name"])
+
+    ax.set_xlabel("Step")
+    ax.set_ylabel(ylabel)
+    # Avoid confusing offset notation (e.g., "1e-7 + 1" that makes small deltas look negative)
+    formatter = ScalarFormatter(useOffset=False)
+    formatter.set_scientific(False)
+    ax.yaxis.set_major_formatter(formatter)
+
+    ax.legend()
+    fig.tight_layout()
+    fig.savefig(out_path)
+    plt.close(fig)
 
 
 def summarize_run(run: Dict, last_n: int) -> Dict[str, float]:

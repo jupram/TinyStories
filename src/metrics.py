@@ -1,7 +1,7 @@
 import csv
 import math
 import os
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, Iterator, List, Optional
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -23,9 +23,29 @@ def _norm_from_params(params: Iterable[torch.nn.Parameter], use_grad: bool = Fal
     return {"l2": l2, "linf": linf}
 
 
+def _iter_params(model: torch.nn.Module, exclude_embeddings: bool = False) -> Iterator[torch.nn.Parameter]:
+    """
+    Yield parameters, optionally skipping embeddings (including tied lm_head weight).
+    """
+    skipped: set[int] = set()
+    for name, param in model.named_parameters():
+        if exclude_embeddings and (
+            "token_emb" in name
+            or "embedding" in name
+            or name.endswith("lm_head.weight")
+        ):
+            skipped.add(id(param))
+            continue
+        if exclude_embeddings and id(param) in skipped:
+            continue
+        yield param
+
+
 def grad_norms(model: torch.nn.Module, per_layer: bool = True) -> Dict[str, float]:
     metrics: Dict[str, float] = {}
-    metrics.update({f"grad/global_{k}": v for k, v in _norm_from_params(model.parameters(), True).items()})
+    metrics.update(
+        {f"grad/global_{k}": v for k, v in _norm_from_params(_iter_params(model, exclude_embeddings=True), True).items()}
+    )
     if per_layer and hasattr(model, "blocks"):
         for idx, block in enumerate(getattr(model, "blocks")):
             norms = _norm_from_params(block.parameters(), True)
@@ -36,7 +56,9 @@ def grad_norms(model: torch.nn.Module, per_layer: bool = True) -> Dict[str, floa
 
 def weight_norms(model: torch.nn.Module, per_layer: bool = True) -> Dict[str, float]:
     metrics: Dict[str, float] = {}
-    metrics.update({f"weights/global_{k}": v for k, v in _norm_from_params(model.parameters(), False).items()})
+    metrics.update(
+        {f"weights/global_{k}": v for k, v in _norm_from_params(_iter_params(model, exclude_embeddings=True), False).items()}
+    )
     if per_layer and hasattr(model, "blocks"):
         for idx, block in enumerate(getattr(model, "blocks")):
             norms = _norm_from_params(block.parameters(), False)
