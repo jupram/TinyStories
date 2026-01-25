@@ -12,6 +12,7 @@ from torch.utils.tensorboard import SummaryWriter
 def _norm_from_params(params: Iterable[torch.nn.Parameter], use_grad: bool = False) -> Dict[str, float]:
     l2_sum = 0.0
     linf = 0.0
+    count = 0
     for p in params:
         data = p.grad if use_grad else p.data
         if data is None:
@@ -19,8 +20,10 @@ def _norm_from_params(params: Iterable[torch.nn.Parameter], use_grad: bool = Fal
         data_f = data.float()
         l2_sum += torch.sum(data_f * data_f).item()
         linf = max(linf, torch.max(torch.abs(data_f)).item())
+        count += data.numel()
     l2 = math.sqrt(l2_sum) if l2_sum > 0 else 0.0
-    return {"l2": l2, "linf": linf}
+    rms = math.sqrt(l2_sum / count) if count > 0 else 0.0
+    return {"l2": l2, "linf": linf, "rms": rms}
 
 
 def _iter_params(model: torch.nn.Module, exclude_embeddings: bool = False) -> Iterator[torch.nn.Parameter]:
@@ -43,27 +46,23 @@ def _iter_params(model: torch.nn.Module, exclude_embeddings: bool = False) -> It
 
 def grad_norms(model: torch.nn.Module, per_layer: bool = True) -> Dict[str, float]:
     metrics: Dict[str, float] = {}
-    metrics.update(
-        {f"grad/global_{k}": v for k, v in _norm_from_params(_iter_params(model, exclude_embeddings=True), True).items()}
-    )
+    norms = _norm_from_params(_iter_params(model, exclude_embeddings=True), True)
+    metrics["grad/global_rms"] = norms["rms"]
     if per_layer and hasattr(model, "blocks"):
         for idx, block in enumerate(getattr(model, "blocks")):
             norms = _norm_from_params(block.parameters(), True)
-            metrics[f"grad/layer.{idx}.l2"] = norms["l2"]
-            metrics[f"grad/layer.{idx}.linf"] = norms["linf"]
+            metrics[f"grad/layer.{idx}.rms"] = norms["rms"]
     return metrics
 
 
 def weight_norms(model: torch.nn.Module, per_layer: bool = True) -> Dict[str, float]:
     metrics: Dict[str, float] = {}
-    metrics.update(
-        {f"weights/global_{k}": v for k, v in _norm_from_params(_iter_params(model, exclude_embeddings=True), False).items()}
-    )
+    global_norms = _norm_from_params(_iter_params(model, exclude_embeddings=True), False)
+    metrics["weights/global_rms"] = global_norms["rms"]
     if per_layer and hasattr(model, "blocks"):
         for idx, block in enumerate(getattr(model, "blocks")):
             norms = _norm_from_params(block.parameters(), False)
-            metrics[f"weights/layer.{idx}.l2"] = norms["l2"]
-            metrics[f"weights/layer.{idx}.linf"] = norms["linf"]
+            metrics[f"weights/layer.{idx}.rms"] = norms["rms"]
     return metrics
 
 
@@ -109,8 +108,8 @@ def plot_run_curves(csv_path: str, out_dir: str) -> None:
     plots = {
         "loss_train.png": [("train/loss", "Train Loss")],
         "loss_val.png": [("val/loss", "Val Loss")],
-        "grad_global_l2.png": [("grad/global_l2", "Grad L2")],
-        "weights_global_l2.png": [("weights/global_l2", "Weights L2")],
+        "grad_global_rms.png": [("grad/global_rms", "Grad RMS")],
+        "weights_global_rms.png": [("weights/global_rms", "Weights RMS")],
     }
     for filename, items in plots.items():
         plt.figure()

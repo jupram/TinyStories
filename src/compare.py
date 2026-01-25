@@ -59,8 +59,8 @@ def summarize_run(run: Dict, last_n: int) -> Dict[str, float]:
         metrics["tokens_seen"] = float(df["tokens_seen"].max())
     tail = df.tail(last_n)
     for col, key in [
-        ("grad/global_l2", "mean_grad_l2"),
-        ("weights/global_l2", "mean_weight_l2"),
+        ("grad/global_rms", "mean_grad_rms"),
+        ("weights/global_rms", "mean_weight_rms"),
     ]:
         if col in tail:
             metrics[key] = float(tail[col].mean())
@@ -76,13 +76,13 @@ def _format_summary_table(df: pd.DataFrame) -> str:
         "final_train_loss",
         "best_val_loss",
         "tokens_seen",
-        "mean_grad_l2",
-        "mean_weight_l2",
+        "mean_grad_rms",
+        "mean_weight_rms",
     ]
     cols = [c for c in column_order if c in df.columns]
     fmt = df[cols].copy()
 
-    for col in ["final_train_loss", "best_val_loss", "mean_grad_l2", "mean_weight_l2"]:
+    for col in ["final_train_loss", "best_val_loss", "mean_grad_rms", "mean_weight_rms"]:
         if col in fmt:
             fmt[col] = fmt[col].map(lambda x: f"{x:.4f}")
     if "tokens_seen" in fmt:
@@ -109,8 +109,8 @@ def main():
 
     plot_overlay(runs, "train/loss", "Train Loss", os.path.join(args.out_dir, "loss_train.png"))
     plot_overlay(runs, "val/loss", "Val Loss", os.path.join(args.out_dir, "loss_val.png"))
-    plot_overlay(runs, "grad/global_l2", "Grad L2", os.path.join(args.out_dir, "grad_global_l2.png"))
-    plot_overlay(runs, "weights/global_l2", "Weights L2", os.path.join(args.out_dir, "weights_global_l2.png"))
+    plot_overlay(runs, "grad/global_rms", "Grad RMS", os.path.join(args.out_dir, "grad_global_rms.png"))
+    plot_overlay(runs, "weights/global_rms", "Weights RMS", os.path.join(args.out_dir, "weights_global_rms.png"))
 
     summary_rows = [summarize_run(run, args.last_n) for run in runs]
     summary_df = pd.DataFrame(summary_rows)
