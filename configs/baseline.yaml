@@ -43,7 +43,7 @@ scheduler:
 batch_size: 32
 val_batch_size: 32
 grad_accum_steps: 1
-max_steps: 2000
+max_steps: 4000
 # ~2000 steps * batch_size 32 -> ~64k sequences; this is a partial epoch, not the full dataset
 # For ~1 full pass, set max_steps to about ceil(len(train_ds)/batch_size) (~15k when TinyStories is packed at seq_len 256).
 # Increase further for multi-epoch training or lower batch_size if you want more optimizer updates with the same token budget.

@@ -71,6 +71,7 @@ jupyter_cache/
 # Project artifacts
 data/
 runs/
+comparisons/
 
 # OS files
 .DS_Store

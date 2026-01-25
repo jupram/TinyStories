@@ -26,7 +26,10 @@ def plot_overlay(runs: List[Dict], column: str, ylabel: str, out_path: str) -> N
         df = run["df"]
         if column not in df:
             continue
-        ax.plot(df["step"], df[column], label=run["name"])
+        series = df[["step", column]].dropna()
+        if series.empty:
+            continue
+        ax.plot(series["step"], series[column], label=run["name"], marker="o", markersize=3, linewidth=1.5)
 
     ax.set_xlabel("Step")
     ax.set_ylabel(ylabel)
