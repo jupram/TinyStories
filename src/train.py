@@ -5,7 +5,7 @@ from typing import Dict
 
 import torch
 import torch.nn.functional as F
-from torch.cuda.amp import GradScaler, autocast
+from torch import amp
 from torch.optim import AdamW
 from tqdm import trange
 
@@ -110,7 +110,7 @@ def evaluate(model, loader, device, dtype, max_batches: int) -> float:
             if batch_idx >= max_batches:
                 break
             input_ids = batch["input_ids"].to(device)
-            with autocast(enabled=dtype != torch.float32, dtype=dtype):
+            with amp.autocast(device_type="cuda", enabled=dtype != torch.float32, dtype=dtype):
                 logits = model(input_ids)
                 loss = loss_fn(logits, input_ids)
             total_loss += loss.item()
@@ -144,6 +144,8 @@ def main():
     set_seed(cfg["seed"])
 
     device = select_device(cfg["device"])
+    if device.type != "cuda" or not torch.cuda.is_available():
+        raise RuntimeError("CUDA is required for training; no CUDA device is available.")
     maybe_enable_deterministic(cfg["deterministic"])
 
     tokenizer = data.load_tokenizer(cfg["data"]["tokenizer_name"])
@@ -187,7 +189,7 @@ def main():
     model = maybe_torch_compile(model, cfg["torch_compile"])
 
     dtype = resolve_precision(cfg["precision"], device)
-    scaler = GradScaler(enabled=(dtype == torch.float16 and device.type == "cuda"))
+    scaler = amp.GradScaler(device="cuda", enabled=(dtype == torch.float16))
 
     optimizer = AdamW(
         model.parameters(),
@@ -231,7 +233,7 @@ def main():
         for _ in range(grad_accum):
             batch = next(train_iter)
             input_ids = batch["input_ids"].to(device)
-            with autocast(enabled=dtype != torch.float32, dtype=dtype):
+            with amp.autocast(device_type="cuda", enabled=dtype != torch.float32, dtype=dtype):
                 logits = model(input_ids)
                 loss = loss_fn(logits, input_ids) / grad_accum
             train_loss += loss.item()

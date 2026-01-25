@@ -17,7 +17,9 @@ def load_tokenizer(name: str = "gpt2") -> PreTrainedTokenizerBase:
 
 
 def _tokenize_function(examples: Dict[str, list], tokenizer: PreTrainedTokenizerBase) -> Dict[str, list]:
-    return tokenizer(examples["text"])
+    # Attention masks aren't used downstream; skipping them avoids column-length
+    # mismatches after we group sequences into fixed blocks.
+    return tokenizer(examples["text"], return_attention_mask=False)
 
 
 def _group_texts(examples: Dict[str, list], seq_len: int) -> Dict[str, list]:
@@ -77,23 +79,31 @@ def prepare_datasets(
         batched=True,
         remove_columns=train_raw.column_names,
         num_proc=num_proc,
+        load_from_cache_file=True,
     )
     tokenized_val = val_raw.map(
         lambda batch: _tokenize_function(batch, tokenizer),
         batched=True,
         remove_columns=val_raw.column_names,
         num_proc=num_proc,
+        load_from_cache_file=True,
     )
+
+    # Defensive: drop any auxiliary columns (e.g., attention_mask) before packing.
+    tokenized_train = tokenized_train.remove_columns([c for c in tokenized_train.column_names if c != "input_ids"])
+    tokenized_val = tokenized_val.remove_columns([c for c in tokenized_val.column_names if c != "input_ids"])
 
     grouped_train = tokenized_train.map(
         lambda batch: _group_texts(batch, seq_len),
         batched=True,
         num_proc=num_proc,
+        load_from_cache_file=True,
     )
     grouped_val = tokenized_val.map(
         lambda batch: _group_texts(batch, seq_len),
         batched=True,
         num_proc=num_proc,
+        load_from_cache_file=True,
     )
 
     def set_format(ds: Dataset) -> Dataset:
