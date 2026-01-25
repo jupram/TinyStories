@@ -1,0 +1,82 @@
+import argparse
+import json
+import os
+from glob import glob
+from typing import Dict, List
+
+import matplotlib.pyplot as plt
+import pandas as pd
+
+
+def load_run(run_dir: str) -> Dict:
+    metrics_path = os.path.join(run_dir, "metrics.csv")
+    config_path = os.path.join(run_dir, "config.json")
+    if not os.path.isfile(metrics_path):
+        raise FileNotFoundError(f"No metrics.csv in {run_dir}")
+    df = pd.read_csv(metrics_path)
+    with open(config_path, "r", encoding="utf-8") as f:
+        cfg = json.load(f)
+    return {"name": os.path.basename(run_dir), "df": df, "config": cfg}
+
+
+def plot_overlay(runs: List[Dict], column: str, ylabel: str, out_path: str) -> None:
+    plt.figure()
+    for run in runs:
+        df = run["df"]
+        if column not in df:
+            continue
+        plt.plot(df["step"], df[column], label=run["name"])
+    plt.xlabel("Step")
+    plt.ylabel(ylabel)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(out_path)
+    plt.close()
+
+
+def summarize_run(run: Dict, last_n: int) -> Dict[str, float]:
+    df = run["df"]
+    metrics = {
+        "run_name": run["name"],
+        "model": run["config"]["model"]["name"],
+        "steps": int(df["step"].max()),
+    }
+    if "train/loss" in df:
+        metrics["final_train_loss"] = float(df["train/loss"].iloc[-1])
+    if "val/loss" in df:
+        metrics["best_val_loss"] = float(df["val/loss"].min())
+    if "tokens_seen" in df:
+        metrics["tokens_seen"] = float(df["tokens_seen"].max())
+    tail = df.tail(last_n)
+    for col, key in [
+        ("grad/global_l2", "mean_grad_l2"),
+        ("weights/global_l2", "mean_weight_l2"),
+    ]:
+        if col in tail:
+            metrics[key] = float(tail[col].mean())
+    return metrics
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--runs_dir", type=str, default="runs", help="Directory containing run folders")
+    parser.add_argument("--out_dir", type=str, default="comparisons", help="Where to save comparison outputs")
+    parser.add_argument("--last_n", type=int, default=100, help="Number of tail steps for norm averages")
+    args = parser.parse_args()
+
+    run_dirs = [p for p in glob(os.path.join(args.runs_dir, "*")) if os.path.isdir(p)]
+    runs = [load_run(rd) for rd in run_dirs]
+    os.makedirs(args.out_dir, exist_ok=True)
+
+    plot_overlay(runs, "train/loss", "Train Loss", os.path.join(args.out_dir, "loss_train.png"))
+    plot_overlay(runs, "val/loss", "Val Loss", os.path.join(args.out_dir, "loss_val.png"))
+    plot_overlay(runs, "grad/global_l2", "Grad L2", os.path.join(args.out_dir, "grad_global_l2.png"))
+    plot_overlay(runs, "weights/global_l2", "Weights L2", os.path.join(args.out_dir, "weights_global_l2.png"))
+
+    summary_rows = [summarize_run(run, args.last_n) for run in runs]
+    summary_df = pd.DataFrame(summary_rows)
+    summary_df.to_csv(os.path.join(args.out_dir, "summary_table.csv"), index=False)
+
+
+if __name__ == "__main__":
+    main()
