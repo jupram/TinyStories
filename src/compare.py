@@ -57,6 +57,35 @@ def summarize_run(run: Dict, last_n: int) -> Dict[str, float]:
     return metrics
 
 
+def _format_summary_table(df: pd.DataFrame) -> str:
+    """Return a nicely formatted summary table (Markdown when available)."""
+    column_order = [
+        "run_name",
+        "model",
+        "steps",
+        "final_train_loss",
+        "best_val_loss",
+        "tokens_seen",
+        "mean_grad_l2",
+        "mean_weight_l2",
+    ]
+    cols = [c for c in column_order if c in df.columns]
+    fmt = df[cols].copy()
+
+    for col in ["final_train_loss", "best_val_loss", "mean_grad_l2", "mean_weight_l2"]:
+        if col in fmt:
+            fmt[col] = fmt[col].map(lambda x: f"{x:.4f}")
+    if "tokens_seen" in fmt:
+        fmt["tokens_seen"] = fmt["tokens_seen"].map(lambda x: f"{int(x):,}")
+    if "steps" in fmt:
+        fmt["steps"] = fmt["steps"].astype(int)
+
+    try:
+        return fmt.to_markdown(index=False)  # pandas uses tabulate if installed
+    except Exception:
+        return fmt.to_string(index=False)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--runs_dir", type=str, default="runs", help="Directory containing run folders")
@@ -76,6 +105,10 @@ def main():
     summary_rows = [summarize_run(run, args.last_n) for run in runs]
     summary_df = pd.DataFrame(summary_rows)
     summary_df.to_csv(os.path.join(args.out_dir, "summary_table.csv"), index=False)
+    table_str = _format_summary_table(summary_df)
+    with open(os.path.join(args.out_dir, "summary_table.md"), "w", encoding="utf-8") as f:
+        f.write(table_str + "\n")
+    print(table_str)
 
 
 if __name__ == "__main__":
