@@ -95,6 +95,326 @@
       "score": 4,
       "prompt": "Tom put the book on the table. The book is on the ",
       "answers": ["table"]
+    },
+    {
+      "id": "gender_003",
+      "category": "gender",
+      "difficulty": 2,
+      "score": 2,
+      "prompt": "Ravi is a boy. Ravi said that",
+      "answers": ["he", "He"]
+    },
+    {
+      "id": "gender_004",
+      "category": "gender",
+      "difficulty": 2,
+      "score": 2,
+      "prompt": "Nina is a girl. Nina said that",
+      "answers": ["she", "She"]
+    },
+    {
+      "id": "counting_004",
+      "category": "counting",
+      "difficulty": 3,
+      "score": 3,
+      "prompt": "Lina had 5 cookies and ate 2. Lina now has",
+      "answers": ["3", "three"]
+    },
+    {
+      "id": "counting_005",
+      "category": "counting",
+      "difficulty": 2,
+      "score": 2,
+      "prompt": "1 3 5 7 ",
+      "answers": ["9", "nine"]
+    },
+    {
+      "id": "association_004",
+      "category": "associations",
+      "difficulty": 1,
+      "score": 1,
+      "prompt": "A dog is an animal. A rose is a",
+      "answers": ["flower"]
+    },
+    {
+      "id": "association_005",
+      "category": "associations",
+      "difficulty": 2,
+      "score": 2,
+      "prompt": "Milk comes from a cow. Eggs come from a",
+      "answers": ["chicken", "hen"]
+    },
+    {
+      "id": "story_logic_003",
+      "category": "story_logic",
+      "difficulty": 4,
+      "score": 4,
+      "prompt": "The ball is in the box. Tom moved it to the bag. Now the ball is in the",
+      "answers": ["bag"]
+    },
+    {
+      "id": "story_logic_004",
+      "category": "story_logic",
+      "difficulty": 4,
+      "score": 4,
+      "prompt": "A bus is bigger than a car. A car is bigger than a bike. The biggest is the",
+      "answers": ["bus"]
+    },
+    {
+      "id": "symbols_002",
+      "category": "symbols",
+      "difficulty": 2,
+      "score": 2,
+      "prompt": "Monday comes before Tuesday. Tuesday comes before",
+      "answers": ["wednesday", "Wednesday"]
+    },
+    {
+      "id": "emotion_011",
+      "category": "emotions",
+      "difficulty": 3,
+      "score": 3,
+      "prompt": "Mia lost her toy and cried. Mia feels",
+      "answers": ["sad"]
+    },
+    {
+      "id": "emotion_001",
+      "category": "emotions",
+      "difficulty": 2,
+      "score": 2,
+      "prompt": "Lia got a gift on her birthday. Lia feels",
+      "answers": ["happy", "glad"]
+    },
+    {
+      "id": "emotion_002",
+      "category": "emotions",
+      "difficulty": 2,
+      "score": 2,
+      "prompt": "Sam broke his favorite toy. Sam feels",
+      "answers": ["sad", "upset"]
+    },
+    {
+      "id": "emotion_003",
+      "category": "emotions",
+      "difficulty": 3,
+      "score": 3,
+      "prompt": "A loud dog barked at Ben in the dark. Ben feels",
+      "answers": ["scared", "afraid"]
+    },
+    {
+      "id": "emotion_004",
+      "category": "emotions",
+      "difficulty": 2,
+      "score": 2,
+      "prompt": "Maya won the race at school. Maya feels",
+      "answers": ["proud", "happy"]
+    },
+    {
+      "id": "emotion_005",
+      "category": "emotions",
+      "difficulty": 3,
+      "score": 3,
+      "prompt": "Nina waited in line, but someone cut in front of her. Nina feels",
+      "answers": ["angry", "mad"]
+    },
+    {
+      "id": "emotion_006",
+      "category": "emotions",
+      "difficulty": 3,
+      "score": 3,
+      "prompt": "Tom could not find his mom in the busy store. Tom feels",
+      "answers": ["worried", "scared"]
+    },
+    {
+      "id": "emotion_007",
+      "category": "emotions",
+      "difficulty": 4,
+      "score": 4,
+      "prompt": "It was raining, but the rain stopped before the picnic started. The children feel",
+      "answers": ["relieved", "happy"]
+    },
+    {
+      "id": "emotion_008",
+      "category": "emotions",
+      "difficulty": 2,
+      "score": 2,
+      "prompt": "Emma got a warm hug from her dad after school. Emma feels",
+      "answers": ["loved", "happy"]
+    },
+    {
+      "id": "emotion_009",
+      "category": "emotions",
+      "difficulty": 3,
+      "score": 3,
+      "prompt": "Ravi forgot to do his homework and the teacher asked for it. Ravi feels",
+      "answers": ["nervous", "worried"]
+    },
+    {
+      "id": "emotion_010",
+      "category": "emotions",
+      "difficulty": 4,
+      "score": 4,
+      "prompt": "Ava saw her friend get the toy she wanted. Ava feels",
+      "answers": ["jealous", "sad"]
+    },
+    {
+      "id": "compositional_001",
+      "category": "compositional_reasoning",
+      "difficulty": 4,
+      "score": 4,
+      "prompt": "The red box is left of the blue box. The green box is right of the blue box. The box in the middle is the",
+      "answers": ["blue box", "blue"]
+    },
+    {
+      "id": "compositional_002",
+      "category": "compositional_reasoning",
+      "difficulty": 4,
+      "score": 4,
+      "prompt": "Ana is taller than Ben. Ben is taller than Cara. The shortest is",
+      "answers": ["cara", "Cara"]
+    },
+    {
+      "id": "state_tracking_001",
+      "category": "state_tracking",
+      "difficulty": 4,
+      "score": 4,
+      "prompt": "The key is in the drawer. Sam moved it to the backpack. Then he moved it to the desk. Now the key is in the",
+      "answers": ["desk"]
+    },
+    {
+      "id": "state_tracking_002",
+      "category": "state_tracking",
+      "difficulty": 4,
+      "score": 4,
+      "prompt": "The cup is on the table. Mia moved it to the shelf. She then put it in the sink. The cup is in the",
+      "answers": ["sink"]
+    },
+    {
+      "id": "counterfactual_001",
+      "category": "counterfactual",
+      "difficulty": 5,
+      "score": 5,
+      "prompt": "The floor is wet because it rained. If it had not rained, the floor would likely be",
+      "answers": ["dry"]
+    },
+    {
+      "id": "counterfactual_002",
+      "category": "counterfactual",
+      "difficulty": 5,
+      "score": 5,
+      "prompt": "Leo was late because he missed the bus. If he had caught the bus, he would be",
+      "answers": ["on time"]
+    },
+    {
+      "id": "quantifiers_001",
+      "category": "quantifiers",
+      "difficulty": 4,
+      "score": 4,
+      "prompt": "All apples are fruits. All fruits are foods. So all apples are",
+      "answers": ["foods", "food"]
+    },
+    {
+      "id": "quantifiers_002",
+      "category": "quantifiers",
+      "difficulty": 4,
+      "score": 4,
+      "prompt": "Some birds can fly. Penguins are birds that cannot fly. A penguin can",
+      "answers": ["not fly", "cannot fly"]
+    },
+    {
+      "id": "coreference_001",
+      "category": "coreference",
+      "difficulty": 4,
+      "score": 4,
+      "prompt": "Tom gave Sam a ball because Sam was sad. Who was sad?",
+      "answers": ["sam", "Sam"]
+    },
+    {
+      "id": "coreference_002",
+      "category": "coreference",
+      "difficulty": 4,
+      "score": 4,
+      "prompt": "Nina thanked Emma because she helped with homework. Who helped?",
+      "answers": ["emma", "Emma"]
+    },
+    {
+      "id": "causality_001",
+      "category": "causality",
+      "difficulty": 3,
+      "score": 3,
+      "prompt": "The ice melted because the sun was hot. The cause was the",
+      "answers": ["sun", "hot sun"]
+    },
+    {
+      "id": "causality_002",
+      "category": "causality",
+      "difficulty": 3,
+      "score": 3,
+      "prompt": "Priya studied every day, so she passed the test. Priya passed because she",
+      "answers": ["studied", "studied every day"]
+    },
+    {
+      "id": "false_belief_001",
+      "category": "false_belief",
+      "difficulty": 5,
+      "score": 5,
+      "prompt": "A toy is in the box. Tim leaves the room. Mia moves the toy to the drawer. Tim comes back. Tim will first look in the",
+      "answers": ["box"]
+    },
+    {
+      "id": "false_belief_002",
+      "category": "false_belief",
+      "difficulty": 5,
+      "score": 5,
+      "prompt": "A cookie is in the jar. Ali goes outside. Ben moves the cookie to the plate. When Ali returns, Ali will first check the",
+      "answers": ["jar"]
+    },
+    {
+      "id": "planning_001",
+      "category": "planning",
+      "difficulty": 4,
+      "score": 4,
+      "prompt": "You must get to school by 8:00 and walking takes 30 minutes. To be on time, leave by",
+      "answers": ["7:30", "7 30"]
+    },
+    {
+      "id": "planning_002",
+      "category": "planning",
+      "difficulty": 3,
+      "score": 3,
+      "prompt": "Mia needs 2 eggs for a cake and she has 1 egg. Mia should",
+      "answers": ["buy one egg", "get one egg", "find one egg"]
+    },
+    {
+      "id": "uncertainty_001",
+      "category": "uncertainty",
+      "difficulty": 5,
+      "score": 5,
+      "prompt": "Ben put a coin in one of two boxes, but the story does not say which one. The coin location is",
+      "answers": ["unknown", "not enough information", "cannot be known"]
+    },
+    {
+      "id": "uncertainty_002",
+      "category": "uncertainty",
+      "difficulty": 5,
+      "score": 5,
+      "prompt": "Lia has a pet, but the story never says whether it is a dog or a cat. The pet type is",
+      "answers": ["unknown", "not enough information", "cannot be known"]
+    },
+    {
+      "id": "robustness_001",
+      "category": "robustness",
+      "difficulty": 3,
+      "score": 3,
+      "prompt": "There are 3 red balls and no blue balls. The number of blue balls is",
+      "answers": ["0", "zero"]
+    },
+    {
+      "id": "robustness_002",
+      "category": "robustness",
+      "difficulty": 3,
+      "score": 3,
+      "prompt": "There are 3 red balls and 0 blue balls. The number of blue balls is",
+      "answers": ["0", "zero"]
     }
   ]
 }

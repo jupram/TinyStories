@@ -28,7 +28,7 @@ data:
   val_split: validation
   val_fraction: 0.01
   cache_dir: data/cache
-  dataset_variant: full  # options: full, small
+  dataset_variant: small  # options: full, small
   small_train_samples: 50000
   small_val_samples: 5000
 
@@ -45,9 +45,9 @@ scheduler:
 batch_size: 32
 val_batch_size: 32
 grad_accum_steps: 1
-max_steps: 4000
+max_steps: 8000
 max_eval_batches: 50
 log_every: 50
-eval_every: 200
-save_every: 1000
+eval_every: 1000
+save_every: 4000
 clip_grad: 1.0

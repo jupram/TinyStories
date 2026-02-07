@@ -34,8 +34,8 @@ python -m src.train --config configs/variant_attention_change.yaml
 # smoke test (short CUDA run)
 python -m src.train --config configs/baseline.yaml --max_steps 50 --device cuda
 
-# small-data run (uses cached subset)
-python -m src.train --config configs/baseline.yaml --override data.dataset_variant=small
+# full-data run (override config default)
+python -m src.train --config configs/baseline.yaml --override data.dataset_variant=full
 ```
 
 Runs are written to `runs/<run_name>` by default. Check the folder for `config.json`, `metrics.csv`, `summary.json`, TensorBoard logs, plots, and optional checkpoints.
@@ -43,6 +43,7 @@ Runs are written to `runs/<run_name>` by default. Check the folder for `config.j
 ## Dataset caching and variants
 - Datasets download once into `data/cache` (configured via `data.cache_dir`) and are reused across runs.
 - Choose between the full dataset (`data.dataset_variant: full`) or a cached subset (`data.dataset_variant: small`).
+- Current config defaults in `configs/*.yaml` are set to `small`, so no override is needed for small-data training.
 - The small split keeps the first `data.small_train_samples` and `data.small_val_samples` examples (defaults: 50,000 / 5,000). Override these in configs or with `--override`.
 - Raw caching is handled by the Hugging Face `datasets` cache; preprocessing still happens each run to respect tokenizer/sequence length changes.
 

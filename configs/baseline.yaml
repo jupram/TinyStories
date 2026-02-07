@@ -26,7 +26,7 @@ data:
   val_split: validation
   val_fraction: 0.01
   cache_dir: data/cache
-  dataset_variant: full  # options: full, small
+  dataset_variant: small  # options: full, small
   small_train_samples: 50000
   small_val_samples: 5000
 
@@ -43,12 +43,12 @@ scheduler:
 batch_size: 32
 val_batch_size: 32
 grad_accum_steps: 1
-max_steps: 4000
+max_steps: 8000
 # ~2000 steps * batch_size 32 -> ~64k sequences; this is a partial epoch, not the full dataset
 # For ~1 full pass, set max_steps to about ceil(len(train_ds)/batch_size) (~15k when TinyStories is packed at seq_len 256).
 # Increase further for multi-epoch training or lower batch_size if you want more optimizer updates with the same token budget.
 max_eval_batches: 50
 log_every: 50
-eval_every: 200
-save_every: 1000
+eval_every: 1000
+save_every: 4000
 clip_grad: 1.0
