@@ -23,6 +23,7 @@ A reproducible pipeline to **train, compare, and evaluate** modern decoder-only 
 - [Add a new variant](#-add-a-new-variant)
 - [Compare runs](#-compare-runs)
 - [Prompt eval harness](#-prompt-eval-harness)
+- [Credits](#credits)
 - [Tests](#-tests)
 
 ---
@@ -138,6 +139,14 @@ Notes:
   - counting and simple arithmetic
   - semantic associations (fruits/vegetables, animals/habitats)
   - short reading comprehension (where is X, who is Y)
+
+---
+
+## Credits
+- TinyStories dataset and benchmark were introduced by **Ronen Eldan** and **Yuanzhi Li**.
+- Paper: *TinyStories: How Small Can Language Models Be and Still Speak Coherent English?*  
+  https://arxiv.org/abs/2305.07759
+- Dataset page: https://huggingface.co/datasets/roneneldan/TinyStories
 
 ---
 
