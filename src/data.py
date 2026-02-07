@@ -19,7 +19,12 @@ def load_tokenizer(name: str = "gpt2") -> PreTrainedTokenizerBase:
 def _tokenize_function(examples: Dict[str, list], tokenizer: PreTrainedTokenizerBase) -> Dict[str, list]:
     # Attention masks aren't used downstream; skipping them avoids column-length
     # mismatches after we group sequences into fixed blocks.
-    return tokenizer(examples["text"], return_attention_mask=False)
+    tokenized = tokenizer(examples["text"], return_attention_mask=False, add_special_tokens=False)
+    eos_id = tokenizer.eos_token_id
+    if eos_id is not None:
+        # Mark story boundaries while still allowing efficient packed training blocks.
+        tokenized["input_ids"] = [ids + [eos_id] for ids in tokenized["input_ids"]]
+    return tokenized
 
 
 def _group_texts(examples: Dict[str, list], seq_len: int) -> Dict[str, list]:

@@ -44,4 +44,4 @@ def test_metric_columns(tmp_path):
 
     assert "train/loss" in header
     assert any(col.startswith("grad/layer.0") for col in header)
-    assert "weights/global_l2" in header
+    assert "weights/global_rms" in header
