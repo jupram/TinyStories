@@ -22,6 +22,7 @@ def load_run(run_dir: str) -> Dict:
 
 def plot_overlay(runs: List[Dict], column: str, ylabel: str, out_path: str) -> None:
     fig, ax = plt.subplots()
+    plotted_values: List[float] = []
     for run in runs:
         df = run["df"]
         if column not in df:
@@ -30,6 +31,12 @@ def plot_overlay(runs: List[Dict], column: str, ylabel: str, out_path: str) -> N
         if series.empty:
             continue
         ax.plot(series["step"], series[column], label=run["name"], marker="o", markersize=3, linewidth=1.5)
+        plotted_values.extend(float(v) for v in series[column].tolist())
+
+    if "loss" in column:
+        positive = [v for v in plotted_values if v > 0]
+        if positive and (max(positive) / max(min(positive), 1e-12)) >= 50.0:
+            ax.set_yscale("log")
 
     ax.set_xlabel("Step")
     ax.set_ylabel(ylabel)

@@ -113,9 +113,21 @@ def plot_run_curves(csv_path: str, out_dir: str) -> None:
     }
     for filename, items in plots.items():
         plt.figure()
+        plotted_cols: List[str] = []
+        plotted_values: List[float] = []
         for col, label in items:
-            if col in df:
-                plt.plot(x, df[col], label=label)
+            if col not in df:
+                continue
+            series = df[col].dropna()
+            if series.empty:
+                continue
+            plt.plot(df.loc[series.index, "step"], series, label=label)
+            plotted_cols.append(col)
+            plotted_values.extend(float(v) for v in series.tolist())
+        if plotted_cols and any("loss" in col for col in plotted_cols):
+            positive = [v for v in plotted_values if v > 0]
+            if positive and (max(positive) / max(min(positive), 1e-12)) >= 50.0:
+                plt.yscale("log")
         plt.xlabel("Step")
         plt.legend()
         plt.tight_layout()

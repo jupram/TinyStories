@@ -23,6 +23,7 @@ A reproducible pipeline to **train, compare, and evaluate** modern decoder-only 
 - [Add a new variant](#-add-a-new-variant)
 - [Compare runs](#-compare-runs)
 - [Prompt eval harness](#-prompt-eval-harness)
+- [Story probe](#-story-probe)
 - [Credits](#credits)
 - [Tests](#-tests)
 
@@ -139,6 +140,22 @@ Notes:
   - counting and simple arithmetic
   - semantic associations (fruits/vegetables, animals/habitats)
   - short reading comprehension (where is X, who is Y)
+
+---
+
+## ?? Story probe
+Generate story continuations from all trained runs for the same prompt.
+
+```bash
+# one completion per run
+python -m src.story_probe --runs_dir runs --prompt "Once upon a time in a tiny village, a small fox found a key."
+
+# multiple samples per run + save JSON
+python -m src.story_probe --runs_dir runs --prompt "Lily opened the old box and saw a glowing map." --num_samples 3 --temperature 0.9 --top_k 50 --out_json comparisons/story_probe/completions.json
+
+# select specific runs / checkpoint
+python -m src.story_probe --runs_dir runs --run_names baseline variant_attention_change --checkpoint_step 4000 --prompt "Tom and Mia went into the forest to find a lost puppy."
+```
 
 ---
 
