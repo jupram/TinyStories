@@ -1,25 +1,43 @@
-TinyStories Transformer Architecture Testing Pipeline
-======================================================
+# TinyStories Transformer Architecture Testing Pipeline
 
-This repo provides a reproducible pipeline to train and compare modern decoder-only Transformer language models on the TinyStories dataset. It emphasizes easy architectural experimentation, consistent logging, and automated run comparisons.
+![TinyStories banner](assets/tinystories-banner.svg)
 
-## Features
-- Baseline GPT-2-style decoder with modern updates: pre-norm RMSNorm, SwiGLU MLP, RoPE, AdamW, warmup + cosine LR, optional FlashAttention and torch.compile, optional mixed precision.
-- Simple registry for swapping model variants (baseline, residual scaling, grouped/multi-query attention example).
-- Reproducible runs with fixed seeds and deterministic flags where reasonable.
-- Metrics logging to CSV + TensorBoard, including global and per-layer grad/weight norms.
-- Self-contained run folders with config, metrics, plots, and optional checkpoints.
-- Comparison CLI to overlay curves and summarize runs.
+A reproducible pipeline to **train, compare, and evaluate** modern decoder-only Transformer language models on the TinyStories dataset. The project emphasizes fast architectural experimentation, consistent logging, and automated run comparisons so you can iterate with confidence.
 
-## Install
+---
+
+## ✨ Highlights
+- **Modern GPT-style baseline** with pre-norm RMSNorm, SwiGLU MLP, RoPE, AdamW, warmup + cosine LR, optional FlashAttention, `torch.compile`, and mixed precision.
+- **Pluggable model variants** (baseline, residual scaling, grouped/multi-query attention example) via a lightweight registry.
+- **Reproducible runs** with fixed seeds, deterministic flags (where reasonable), and self-contained run folders.
+- **Rich metrics** in CSV + TensorBoard, including per-layer grad/weight norms.
+- **Comparison CLI** for overlay plots and run summaries.
+- **Prompt evaluation harness** with scoring by category and difficulty.
+
+---
+
+## 📚 Table of Contents
+- [Install](#-install)
+- [Quickstart](#-quickstart)
+- [Dataset caching & variants](#-dataset-caching--variants)
+- [Add a new variant](#-add-a-new-variant)
+- [Compare runs](#-compare-runs)
+- [Prompt eval harness](#-prompt-eval-harness)
+- [Tests](#-tests)
+
+---
+
+## 🛠️ Install
 ```bash
 python -m venv .venv
 .venv/Scripts/activate  # Windows
 pip install -r requirements.txt
 ```
 
-## Quickstart
-Training currently requires a CUDA-capable GPU.
+---
+
+## 🚀 Quickstart
+> **Note:** Training currently requires a CUDA-capable GPU.
 
 ```bash
 # baseline training
@@ -38,31 +56,44 @@ python -m src.train --config configs/baseline.yaml --max_steps 50 --device cuda
 python -m src.train --config configs/baseline.yaml --override data.dataset_variant=full
 ```
 
-Runs are written to `runs/<run_name>` by default. Check the folder for `config.json`, `metrics.csv`, `summary.json`, TensorBoard logs, plots, and optional checkpoints.
+Runs are written to `runs/<run_name>` by default. Each run folder includes:
+- `config.json`
+- `metrics.csv`
+- `summary.json`
+- TensorBoard logs
+- Plots
+- Optional checkpoints
 
-## Dataset caching and variants
+---
+
+## 🧠 Dataset caching & variants
 - Datasets download once into `data/cache` (configured via `data.cache_dir`) and are reused across runs.
 - Choose between the full dataset (`data.dataset_variant: full`) or a cached subset (`data.dataset_variant: small`).
 - Current config defaults in `configs/*.yaml` are set to `small`, so no override is needed for small-data training.
 - The small split keeps the first `data.small_train_samples` and `data.small_val_samples` examples (defaults: 50,000 / 5,000). Override these in configs or with `--override`.
 - Raw caching is handled by the Hugging Face `datasets` cache; preprocessing still happens each run to respect tokenizer/sequence length changes.
 
-## Add a new variant
+---
+
+## 🧩 Add a new variant
 1. Implement a new module in `src/models/variants.py` (follow existing examples).
 2. Register it in `src/models/registry.py` by adding an entry to `MODEL_REGISTRY`.
 3. Create a config YAML pointing `model.name` to your variant and adjusting hyperparameters.
 4. Train with `python -m src.train --config your_config.yaml`.
 
-## Compare runs
+---
+
+## 📊 Compare runs
 ```bash
 python -m src.compare --runs_dir runs --out_dir comparisons
 ```
 
 Generates overlay plots (loss, grad norms, weight norms) and `summary_table.csv`.
 
-## Prompt eval harness
-Use this to score checkpoints on targeted prompts (gender, counting, associations, etc.).
-Each prompt has a `difficulty` and `score`, and the harness awards points only when the answer passes.
+---
+
+## 🧪 Prompt eval harness
+Use this to score checkpoints on targeted prompts (gender, counting, associations, etc.). Each prompt has a `difficulty` and `score`, and the harness awards points only when the answer passes.
 
 ```bash
 # evaluate all runs in runs/ using the latest checkpoint in each run folder
@@ -108,7 +139,9 @@ Notes:
   - semantic associations (fruits/vegetables, animals/habitats)
   - short reading comprehension (where is X, who is Y)
 
-## Tests
+---
+
+## ✅ Tests
 ```bash
 pytest
 ```
