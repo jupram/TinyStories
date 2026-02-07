@@ -248,6 +248,19 @@ def write_csv(path: str, rows: List[Dict], fieldnames: List[str]) -> None:
         writer.writerows(rows)
 
 
+def sort_eval_rows_by_prompt(eval_rows: List[Dict], prompts: Sequence[PromptItem]) -> List[Dict]:
+    prompt_order = {p.prompt_id: idx for idx, p in enumerate(prompts)}
+    return sorted(
+        eval_rows,
+        key=lambda row: (
+            prompt_order.get(row["prompt_id"], 10**9),
+            row["prompt_id"],
+            row["run_name"],
+            row["checkpoint"],
+        ),
+    )
+
+
 def build_summary(eval_rows: List[Dict]) -> List[Dict]:
     summary: Dict[str, Dict] = {}
     for row in eval_rows:
@@ -406,6 +419,7 @@ def main():
         if device.type == "cuda":
             torch.cuda.empty_cache()
 
+    eval_rows = sort_eval_rows_by_prompt(eval_rows, prompts)
     summary_rows = build_summary(eval_rows)
     category_rows = build_breakdown(eval_rows, key="category")
     difficulty_rows = build_breakdown(eval_rows, key="difficulty")
