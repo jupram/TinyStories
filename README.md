@@ -143,7 +143,7 @@ Notes:
 
 ---
 
-## ?? Story probe
+## 📖 Story probe
 Generate story continuations from all trained runs for the same prompt.
 
 ```bash
