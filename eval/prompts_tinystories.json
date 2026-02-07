@@ -1,0 +1,100 @@
+{
+  "prompts": [
+    {
+      "id": "gender_001",
+      "category": "gender",
+      "difficulty": 1,
+      "score": 1,
+      "prompt": "Tom is a boy. Lily is a",
+      "answers": ["girl"]
+    },
+    {
+      "id": "gender_002",
+      "category": "gender",
+      "difficulty": 1,
+      "score": 1,
+      "prompt": "Tom is a boy. But Emma and Rita are",
+      "answers": ["girls"]
+    },
+    {
+      "id": "counting_001",
+      "category": "counting",
+      "difficulty": 1,
+      "score": 1,
+      "prompt": "1 2 3 4 5 ",
+      "answers": ["6", "six"]
+    },
+    {
+      "id": "counting_002",
+      "category": "counting",
+      "difficulty": 2,
+      "score": 2,
+      "prompt": "2 4 6 8 ",
+      "answers": ["10", "ten"]
+    },
+    {
+      "id": "counting_003",
+      "category": "counting",
+      "difficulty": 3,
+      "score": 3,
+      "prompt": "Mia has 2 apples and gets 1 more apple. Mia now has",
+      "answers": ["3", "three"]
+    },
+    {
+      "id": "association_001",
+      "category": "associations",
+      "difficulty": 2,
+      "score": 2,
+      "prompt": "Apple and banana are fruits. Carrot and broccoli are",
+      "answers": ["vegetables", "vegetable"]
+    },
+    {
+      "id": "association_002",
+      "category": "associations",
+      "difficulty": 2,
+      "score": 2,
+      "prompt": "Fish lives in water. A bird lives in the",
+      "answers": ["sky"]
+    },
+    {
+      "id": "association_003",
+      "category": "associations",
+      "difficulty": 1,
+      "score": 1,
+      "prompt": "The grass is green. The sky is",
+      "answers": ["blue"]
+    },
+    {
+      "id": "story_logic_001",
+      "category": "story_logic",
+      "difficulty": 3,
+      "score": 3,
+      "prompt": "Sara is Tom's mother. Tom is Sara's",
+      "answers": ["son", "child"]
+    },
+    {
+      "id": "story_logic_002",
+      "category": "story_logic",
+      "difficulty": 3,
+      "score": 3,
+      "prompt": "Morning comes before night. Night comes after",
+      "answers": ["morning"]
+    },
+    {
+      "id": "letters_001",
+      "category": "symbols",
+      "difficulty": 2,
+      "score": 2,
+      "prompt": "A B C D ",
+      "answers": ["e", "E"]
+    },
+    {
+      "id": "reading_comp_001",
+      "category": "reading_comprehension",
+      "difficulty": 4,
+      "score": 4,
+      "prompt": "Tom put the book on the table. The book is on the ",
+      "answers": ["table"]
+    }
+  ]
+}

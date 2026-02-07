@@ -19,6 +19,8 @@ pip install -r requirements.txt
 ```
 
 ## Quickstart
+Training currently requires a CUDA-capable GPU.
+
 ```bash
 # baseline training
 python -m src.train --config configs/baseline.yaml
@@ -29,8 +31,8 @@ python -m src.train --config configs/variant_residual_scaling.yaml
 # attention variant (GQA/MQA)
 python -m src.train --config configs/variant_attention_change.yaml
 
-# smoke test (fast CPU run)
-python -m src.train --config configs/baseline.yaml --max_steps 50 --device cpu
+# smoke test (short CUDA run)
+python -m src.train --config configs/baseline.yaml --max_steps 50 --device cuda
 
 # small-data run (uses cached subset)
 python -m src.train --config configs/baseline.yaml --override data.dataset_variant=small
@@ -56,6 +58,54 @@ python -m src.compare --runs_dir runs --out_dir comparisons
 ```
 
 Generates overlay plots (loss, grad norms, weight norms) and `summary_table.csv`.
+
+## Prompt eval harness
+Use this to score checkpoints on targeted prompts (gender, counting, associations, etc.).
+Each prompt has a `difficulty` and `score`, and the harness awards points only when the answer passes.
+
+```bash
+# evaluate all runs in runs/ using the latest checkpoint in each run folder
+python -m src.eval_harness --runs_dir runs --prompts eval/prompts_tinystories.json --out_dir comparisons/eval_harness
+
+# evaluate only selected runs
+python -m src.eval_harness --runs_dir runs --run_names baseline variant_attention_change --prompts eval/prompts_tinystories.json
+
+# evaluate a specific checkpoint step
+python -m src.eval_harness --runs_dir runs --checkpoint_step 4000 --prompts eval/prompts_tinystories.json
+```
+
+Outputs are written to `comparisons/eval_harness` by default:
+- `eval_results.csv`: one row per prompt completion.
+- `summary_table.csv` / `summary_table.md`: per-run overall accuracy and weighted score.
+- `category_breakdown.csv`: per-run scores by category.
+- `difficulty_breakdown.csv`: per-run scores by difficulty.
+
+Prompt file format:
+
+```json
+{
+  "prompts": [
+    {
+      "id": "gender_001",
+      "category": "gender",
+      "difficulty": 1,
+      "score": 1,
+      "prompt": "Tom is a boy. Lily is a",
+      "answers": ["girl"],
+      "match": "contains"
+    }
+  ]
+}
+```
+
+Notes:
+- `match` supports `contains` (default), `exact`, `prefix`, and `regex`.
+- Use higher `difficulty` and higher `score` for harder reasoning items.
+- For TinyStories-style checks, include buckets like:
+  - gender/pronoun understanding
+  - counting and simple arithmetic
+  - semantic associations (fruits/vegetables, animals/habitats)
+  - short reading comprehension (where is X, who is Y)
 
 ## Tests
 ```bash
